@@ -10,6 +10,12 @@
 UExtendedCommonActivatableWidget::UExtendedCommonActivatableWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	bDisplayInActionBar = true;
+	bSupportsActivationFocus = true;
+	bAutoActivate = true;
+	bIsModal = true;
+	bAutoRestoreFocus = true;
+	SetConsumePointerInput(true);
 }
 
 TOptional<FUIInputConfig> UExtendedCommonActivatableWidget::GetDesiredInputConfig() const
@@ -77,6 +83,10 @@ void UExtendedCommonActivatableWidget::UnregisterAllBindings()
 		Handle.Unregister();
 	}
 	BindingHandles.Empty();
+}
+
+void UExtendedCommonActivatableWidget::OnPromptConfirm_Implementation(int32 PromptIndex)
+{
 }
 
 #if WITH_EDITOR
