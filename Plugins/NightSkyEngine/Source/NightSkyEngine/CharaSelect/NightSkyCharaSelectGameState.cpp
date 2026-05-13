@@ -2,6 +2,8 @@
 
 
 #include "NightSkyCharaSelectGameState.h"
+
+#include "Engine/AssetManager.h"
 #include "NightSkyEngine/Battle/NightSkyGameState.h"
 #include "NightSkyEngine/Data/PrimaryCharaData.h"
 #include "NightSkyEngine/Miscellaneous/NightSkyGameInstance.h"
@@ -84,5 +86,54 @@ void ANightSkyCharaSelectGameState::AddColorIndex(int InColor, bool IsP1)
 		if (P2Charas.Num() >= GameInstance->BattleData.PlayerListP2.Num())
 			return;
 		GameInstance->BattleData.ColorIndicesP2[P2Charas.Num() - 1] = InColor;
+	}
+}
+
+void ANightSkyCharaSelectGameState::GatherCharaData()
+{
+	TArray<FPrimaryAssetId> AssetIds;
+	
+	UAssetManager::Get().GetPrimaryAssetIdList(
+	  FPrimaryAssetType(TEXT("PrimaryCharaData")),
+	  AssetIds
+  );
+
+	//
+	// Iterate
+	//
+
+	for (const FPrimaryAssetId& AssetId : AssetIds)
+	{
+		//
+		// Soft Object Path
+		//
+
+		FSoftObjectPath AssetPath =
+			UAssetManager::Get().GetPrimaryAssetPath(AssetId);
+
+		//
+		// Load
+		//
+
+		UObject* LoadedObject =
+			AssetPath.TryLoad();
+
+		//
+		// Cast
+		//
+
+		UPrimaryCharaData* CharaData =
+			Cast<UPrimaryCharaData>(LoadedObject);
+
+		if (!CharaData)
+		{
+			continue;
+		}
+
+		//
+		// Store
+		//
+
+		CharaDatas.Add(CharaData);
 	}
 }
