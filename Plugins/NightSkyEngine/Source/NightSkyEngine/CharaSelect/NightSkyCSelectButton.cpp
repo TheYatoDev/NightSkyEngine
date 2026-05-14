@@ -24,12 +24,12 @@ void UNightSkyCSelectButton::NativeOnHovered()
 	
 	UE_LOG(LogTemp, Warning, TEXT("Hovered button: %s | Grid: %s | CharaData: %s"),
 		*GetNameSafe(this),
-		*GetNameSafe(OwningGrid),
+		*GetNameSafe(Owner),
 		*GetNameSafe(CharaData));
 	
-	if (OwningGrid && CharaData)
+	if (Owner && CharaData)
 	{
-		OwningGrid->OnCharaHovered(CharaData->CharaFriendlyName);
+		Owner->OnCharaHovered(CharaData->CharaFriendlyName);
 	}
 }
 
@@ -37,16 +37,16 @@ void UNightSkyCSelectButton::NativeOnClicked()
 {
 	Super::NativeOnClicked();
 	
-	if (OwningGrid && CharaData)
+	if (Owner && CharaData)
 	{
-		OwningGrid->OnCharaSelected(CharaData);
+		Owner->OnCharaSelected(CharaData);
 	}
 }
 
 void UNightSkyCSelectButton::InitButton(UPrimaryCharaData* InCharaData, UNightSkyCharaSelectGrid* InOwningGrid)
 {
 	CharaData = InCharaData;
-	OwningGrid = InOwningGrid;
+	Owner = InOwningGrid;
 
 	if (ButtonImage && CharaData)
 	{

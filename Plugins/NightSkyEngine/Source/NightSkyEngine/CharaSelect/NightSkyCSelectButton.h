@@ -25,7 +25,7 @@ protected:
 	
 protected:
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UOverlay> MainOverlay;
+	TObjectPtr<UOverlay> Overlay;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UImage> ButtonImage;
@@ -35,7 +35,7 @@ public:
 	TObjectPtr<UPrimaryCharaData> CharaData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character Select")
-	TObjectPtr<UNightSkyCharaSelectGrid> OwningGrid;
+	TObjectPtr<UNightSkyCharaSelectGrid> Owner;
 	
 	void InitButton(UPrimaryCharaData* InCharaData, UNightSkyCharaSelectGrid* InOwningGrid);
 	

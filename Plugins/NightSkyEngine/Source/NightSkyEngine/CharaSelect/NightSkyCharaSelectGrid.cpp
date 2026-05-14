@@ -128,6 +128,53 @@ void UNightSkyCharaSelectGrid::OnCharaHovered(FText Name)
 
 void UNightSkyCharaSelectGrid::OnCharaSelected(UPrimaryCharaData* Player)
 {
-	
+	if (!Player)
+	{
+		return;
+	}
+
+	UNightSkyGameInstance* NightSkyGI = Cast<UNightSkyGameInstance>(GetGameInstance());
+
+	if (!NightSkyGI)
+	{
+		return;
+	}
+
+	int32 Index = INDEX_NONE;
+
+	if (bIsP1)
+	{
+		const int32 ExistingIndex =
+			NightSkyGI->BattleData.PlayerListP1.IndexOfByPredicate(
+				[Player](const TSoftObjectPtr<UPrimaryCharaData>& Entry)
+				{
+					return Entry.Get() == Player;
+				}
+			);
+
+		if (CharNumP1 > ExistingIndex || ExistingIndex == INDEX_NONE)
+		{
+			Index = CharNumP1;
+		}
+	}
+	else
+	{
+		for (int32 ArrayIndex = 0; ArrayIndex < NightSkyGI->BattleData.PlayerListP1.Num(); ++ArrayIndex)
+		{
+			const TSoftObjectPtr<UPrimaryCharaData>& Entry =
+				NightSkyGI->BattleData.PlayerListP1[ArrayIndex];
+
+			if (Entry.Get() == Player && ArrayIndex < CharNumP2)
+			{
+				Index = CharNumP2;
+				break;
+			}
+		}
+	}
+
+	if (Index == INDEX_NONE)
+	{
+		return;
+	}
 }
 
