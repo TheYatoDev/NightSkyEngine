@@ -774,6 +774,7 @@ public:
 	bool bPercentConvertion = false;
 	//set and allow custom damage suffix for damage display
 	UPROPERTY(EditAnywhere, Category = "UI")
+	//If not using a symbol, add a space before your desired suffix
 	FString DefaultDamageSuffix = TEXT("");
 	FString GetDamageSuffix() const
 	{
