@@ -89,6 +89,12 @@ public:
 	int PlayerIndex;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FBattleData BattleData;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere) //start new vars
+	int TeamSizeP1 = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int TeamSizeP2 = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool IsHost = true;							//end new vars
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool IsTraining = false;

@@ -30,6 +30,8 @@ public:
 	TArray<APlayerObject*> P2Charas;
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> P2Positions;
+	UPROPERTY(BlueprintReadOnly, Category="Character Select")
+	TArray<TObjectPtr<UPrimaryCharaData>> CharaDatas;
 
 protected:
 	// Called when the game starts or when spawned
@@ -43,4 +45,6 @@ public:
 	void AddPlayerObject(UPrimaryCharaData* Player, bool IsP1 = true);
 	UFUNCTION(BlueprintCallable)
 	void AddColorIndex(int InColor, bool IsP1 = true);
+	UFUNCTION(BlueprintCallable)
+	void GatherCharaData();
 };
