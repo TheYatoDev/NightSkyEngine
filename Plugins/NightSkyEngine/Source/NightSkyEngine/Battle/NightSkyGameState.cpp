@@ -1489,6 +1489,10 @@ void ANightSkyGameState::UpdateHUD()
 			BattleHudActor->TopWidget->Timer = static_cast<float>(BattleState.RoundTimer / 60);
 			BattleHudActor->TopWidget->P1ComboCounter = BattleState.MainPlayer[0]->ComboCounter;
 			BattleHudActor->TopWidget->P2ComboCounter = BattleState.MainPlayer[1]->ComboCounter;
+			//Start assign proper display damages
+			BattleHudActor->TopWidget->P1DamageDisplay = FString::Printf(TEXT("%d%s"), BattleState.MainPlayer[1]->DisplayDamage, *BattleState.MainPlayer[0]->GetDamageSuffix());
+			BattleHudActor->TopWidget->P2DamageDisplay = FString::Printf(TEXT("%d%s"), BattleState.MainPlayer[0]->DisplayDamage, *BattleState.MainPlayer[1]->GetDamageSuffix());
+			//End assign proper display damages
 			BattleHudActor->TopWidget->Ping = NetworkStats.Ping;
 			BattleHudActor->TopWidget->RollbackFrames = NetworkStats.RollbackFrames;
 

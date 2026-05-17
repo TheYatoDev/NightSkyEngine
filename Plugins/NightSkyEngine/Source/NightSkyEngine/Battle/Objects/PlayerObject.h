@@ -526,6 +526,8 @@ public:
 	int32 RecoverableHealth;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 ComboCounter;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32 DisplayDamage; // create variable for displaying damage in ui
 	
 	int32 TotalProration = 10000;
 	int32 ComboTimer;
@@ -767,6 +769,17 @@ public:
 	void RoundInit(bool ResetHealth);
 	void HandleFlipInput();
 	void HandleEndCombo();
+	//check damage total convertion
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	bool bPercentConvertion = false;
+	//set and allow custom damage suffix for damage display
+	UPROPERTY(EditAnywhere, Category = "UI")
+	FString DefaultDamageSuffix = TEXT("");
+	FString GetDamageSuffix() const
+	{
+		return bPercentConvertion ? TEXT("%") : DefaultDamageSuffix;
+	}
+	
 	
 	static uint32 FlipInput(uint32 Input);
 	

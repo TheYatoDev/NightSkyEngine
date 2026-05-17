@@ -56,6 +56,12 @@ public:
 	int P1ComboCounter;
 	UPROPERTY(BlueprintReadOnly)
 	int P2ComboCounter;
+	// Start Create UI damage displays
+	UPROPERTY(BlueprintReadOnly)
+	FString P1DamageDisplay;
+	UPROPERTY(BlueprintReadOnly)
+	FString P2DamageDisplay;
+	// End UI damage displays
 	UPROPERTY(BlueprintReadOnly)
 	int Ping;
 	UPROPERTY(BlueprintReadOnly)

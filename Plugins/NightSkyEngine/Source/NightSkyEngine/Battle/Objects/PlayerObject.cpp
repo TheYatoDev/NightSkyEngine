@@ -937,6 +937,17 @@ void APlayerObject::HandleHitAction(EHitAction HACT)
 		FinalDamage = FinalDamage * OtgProration / 100;
 
 	CurrentHealth -= FinalDamage;
+	
+	// check and calc damage percent if needed
+	if (bPercentConvertion)
+	{
+		DisplayDamage += (FinalDamage * 100 + MaxHealth / 2) / MaxHealth;
+	}
+	else
+	{
+		DisplayDamage += FinalDamage;
+	}
+	
 	if (CurrentHealth > 0)
 	{
 		if (IsMainPlayer())
@@ -3119,6 +3130,7 @@ void APlayerObject::RoundInit(bool ResetHealth)
 	TotalProration = 10000;
 	ComboCounter = 0;
 	ComboTimer = 0;
+	DisplayDamage = 0;
 	ThrowTechWindow = 6;
 	InvulnFlags = 0;
 	PlayerFlags &= ~PLF_IsDead;
@@ -3212,6 +3224,7 @@ void APlayerObject::HandleEndCombo()
 		ReceivedHit = FHitData();
 		TotalProration = 10000;
 		OTGCount = 0;
+		DisplayDamage = 0;
 		bCrumpled = false;
 	}
 }
