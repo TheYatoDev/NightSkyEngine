@@ -61,8 +61,7 @@ void UNightSkyCharaSelectGrid::PopulateButtons()
 		{
 			continue;
 		}
-
-		CSelectButton->bIsFocusable = true;
+		
 		CSelectButton->SetIsSelectable(true);
 		CSelectButton->SetIsInteractionEnabled(true);
 		CSelectButton->InitButton(CharaData, this);
@@ -70,8 +69,7 @@ void UNightSkyCharaSelectGrid::PopulateButtons()
 		CharBox->AddChild(CSelectButton);
 		Buttons.Add(CSelectButton);
 
-		UE_LOG(LogTemp, Warning, TEXT("Spawned Button Class: %s"),
-			*GetNameSafe(CSelectButton->GetClass()));
+		UE_LOG(LogTemp, Warning, TEXT("Spawned Button Class: %s"), *GetNameSafe(CSelectButton->GetClass()));
 	}
 }
 
