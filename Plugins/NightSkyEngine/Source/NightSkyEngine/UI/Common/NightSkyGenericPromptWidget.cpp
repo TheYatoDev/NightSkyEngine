@@ -2,7 +2,6 @@
 
 
 #include "NightSkyGenericPromptWidget.h"
-
 #include "CommonTextBlock.h"
 
 void UNightSkyGenericPromptWidget::NativeOnActivated()

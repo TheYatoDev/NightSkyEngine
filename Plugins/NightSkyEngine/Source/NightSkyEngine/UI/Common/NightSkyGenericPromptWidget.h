@@ -23,14 +23,14 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonTextBlock> PromptText;
 
-	UPROPERTY(BlueprintReadOnly, Category="Prompt")
+	UPROPERTY(BlueprintReadOnly, Category="Default")
 	TObjectPtr<UExtendedCommonActivatableWidget> Owner;
 
-	UPROPERTY(BlueprintReadOnly, Category="Prompt")
+	UPROPERTY(BlueprintReadOnly, Category="Default")
 	int32 Index = 0;
 
 public:
-	UFUNCTION(BlueprintCallable, Category="Prompt")
+	UFUNCTION(BlueprintCallable, Category="Default")
 	void SetPromptInfo(FText InPromptText, UExtendedCommonActivatableWidget* InPromptOwner, int32 InPromptIndex);
 	
 };

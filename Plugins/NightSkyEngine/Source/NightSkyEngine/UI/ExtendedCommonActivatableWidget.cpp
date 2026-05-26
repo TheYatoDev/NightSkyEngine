@@ -1,5 +1,4 @@
 #include "ExtendedCommonActivatableWidget.h"
-
 #include "Editor/WidgetCompilerLog.h"
 #include "Input/CommonUIInputTypes.h"
 

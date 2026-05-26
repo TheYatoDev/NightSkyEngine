@@ -32,19 +32,20 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UCommonBoundActionBar> ActionBar;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="UI|Prompt")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
 	TSubclassOf<UNightSkyGenericPromptWidget> GenericPromptClass;
 	
-	UFUNCTION(BlueprintCallable, Category="UI")
+public:
+	UFUNCTION(BlueprintCallable, Category="Default")
+	UCommonActivatableWidget* PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
+	
+	UFUNCTION(BlueprintCallable, Category="Default")
 	UCommonActivatableWidget* PushMenu(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
 	
-	UFUNCTION(BlueprintCallable, Category="UI|Prompt")
+	UFUNCTION(BlueprintCallable, Category="Default")
 	UNightSkyGenericPromptWidget* PushPrompt(FText InPromptText, UExtendedCommonActivatableWidget* InPromptOwner, int32 InPromptIndex);
 	
 	UFUNCTION()
 	void OnClearPrompt();
-	
-	UFUNCTION(BlueprintCallable, Category="UI")
-	UCommonActivatableWidget* PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
 	
 };

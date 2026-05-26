@@ -2,16 +2,16 @@
 
 
 #include "NightSkyCharaSelectGrid.h"
-
 #include "Components/CanvasPanel.h"
-#include "Components/Overlay.h"
+//#include "Components/Overlay.h"
 #include "Components/WrapBox.h"
-
-#include "CommonBorder.h"
+//#include "CommonBorder.h"
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
 #include "NightSkyCSelectButton.h"
-#include "VectorTypes.h"
+//#include "VectorTypes.h"
+#include "NightSkyCharaPlayerSelectController.h"
+#include "Kismet/GameplayStatics.h"
 #include "NightSkyEngine/Data/PrimaryCharaData.h"
 #include "NightSkyEngine/Miscellaneous/NightSkyGameInstance.h"
 
@@ -35,6 +35,13 @@ void UNightSkyCharaSelectGrid::NativeTick(const FGeometry& MyGeometry, float InD
 	{
 		bIsP1 = true;
 	}
+}
+
+void UNightSkyCharaSelectGrid::NativeOnActivated()
+{
+	Super::NativeOnActivated();
+	
+	SetDesiredFocusWidget(GetDesiredFocusTarget());
 }
 
 void UNightSkyCharaSelectGrid::PopulateButtons()
@@ -173,6 +180,98 @@ void UNightSkyCharaSelectGrid::OnCharaSelected(UPrimaryCharaData* Player)
 	if (Index == INDEX_NONE)
 	{
 		return;
+	}
+}
+
+void UNightSkyCharaSelectGrid::OnCharaConfirm()
+{
+	const bool bP1Complete =
+		GameState && GameState->P1Charas.Num() >= CharNumP1;
+
+	if (bP1Complete && !bIsP1)
+	{
+		bIsP1 = false;
+
+		UNightSkyGameInstance* NightSkyGI =
+			Cast<UNightSkyGameInstance>(GetGameInstance());
+
+		if (!NightSkyGI)
+		{
+			return;
+		}
+
+		const bool bP2Complete =
+			GameState && GameState->P2Charas.Num() >= CharNumP2;
+
+		const bool bIsMultiplayer =
+			NightSkyGI->FighterRunner == Multiplayer;
+
+		if (bP2Complete || bIsMultiplayer)
+		{
+			if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+			{
+				if (ANightSkyCharaPlayerSelectController* CharaSelectPC =
+					Cast<ANightSkyCharaPlayerSelectController>(PC))
+				{
+					CharaSelectPC->PushMenu(StageSelectWidgetClass);
+				}
+			}
+		}
+	}
+	else
+	{
+		if (bIsP1)
+		{
+			UNightSkyGameInstance* NightSkyGI =
+				Cast<UNightSkyGameInstance>(GetGameInstance());
+
+			if (!NightSkyGI)
+			{
+				return;
+			}
+
+			switch (NightSkyGI->FighterRunner)
+			{
+			case LocalPlay:
+				{
+					APlayerController* PC =
+						UGameplayStatics::GetPlayerController(this, 0);
+
+					if (ANightSkyMenuController* MenuPC =
+						Cast<ANightSkyMenuController>(PC))
+					{
+						MenuPC->PushMenu(LocalPlayListWidgetClass);
+					}
+
+					break;
+				}
+
+			case Multiplayer:
+				break;
+
+			case SyncTest:
+				break;
+
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void UNightSkyCharaSelectGrid::OnPromptConfirm_Implementation(int32 PromptIndex)
+{
+	switch (PromptIndex)
+	{
+	case 0:
+		if (!MainMenuLevel.IsNull())
+		{
+			UGameplayStatics::OpenLevelBySoftObjectPtr(this, MainMenuLevel);
+		}
+		break;
+
+	default:
+		break;
 	}
 }
 

@@ -20,10 +20,7 @@ class NIGHTSKYENGINE_API UNightSkyCharaSelectGrid : public UExtendedCommonActiva
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
-	//
-	// Widget Bindings
-	//
+	virtual void NativeOnActivated() override;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> CanvasPanel;
@@ -32,7 +29,7 @@ protected:
 	TObjectPtr<class UCommonBorder> MainBorder;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UOverlay> MainOverlay;
+	TObjectPtr<UOverlay> MainOverlay;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UWrapBox> CharBox;
@@ -41,18 +38,10 @@ protected:
 	TObjectPtr<class UCommonTextBlock> SelectedP1;
 
 	UPROPERTY(meta = (BindWidgetOptional))
-	TObjectPtr<class UCommonTextBlock> SelectedP2;
-
-	//
-	// Button Class
-	//
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Select")
+	TObjectPtr<UCommonTextBlock> SelectedP2;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
 	TSubclassOf<UNightSkyCSelectButton> ButtonClass;
-
-	//
-	// Runtime Buttons
-	//
 
 	UPROPERTY()
 	TArray<TObjectPtr<UNightSkyCSelectButton>> Buttons;
@@ -78,9 +67,24 @@ protected:
 	void SetCharNum();
 	
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
+	TSoftObjectPtr<UWorld> MainMenuLevel;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
+	TSubclassOf<UCommonActivatableWidget> LocalPlayListWidgetClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
+	TSubclassOf<UCommonActivatableWidget> StageSelectWidgetClass;
+	
 	UFUNCTION(BlueprintCallable)
 	void OnCharaHovered(FText Name);
 	
 	UFUNCTION(BlueprintCallable)
 	void OnCharaSelected(UPrimaryCharaData* Player);
+	
+	UFUNCTION(BlueprintCallable)
+	void OnCharaConfirm();
+	
+	virtual void OnPromptConfirm_Implementation(int32 PromptIndex) override;
+	
 };
