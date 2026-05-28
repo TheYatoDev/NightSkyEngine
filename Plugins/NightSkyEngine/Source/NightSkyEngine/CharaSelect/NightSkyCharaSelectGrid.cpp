@@ -181,6 +181,30 @@ void UNightSkyCharaSelectGrid::OnCharaSelected(UPrimaryCharaData* Player)
 	{
 		return;
 	}
+	
+	// Store the selected player into BattleData before this point if needed.
+
+	ANightSkyCharaSelectGameState* CharaSelectGS =
+		GetWorld() ? GetWorld()->GetGameState<ANightSkyCharaSelectGameState>() : nullptr;
+
+	if (!CharaSelectGS)
+	{
+		return;
+	}
+
+	CharaSelectGS->AddPlayerObject(Player, bIsP1);
+
+	ANightSkyCharaPlayerSelectController* CharaSelectPC =
+		Cast<ANightSkyCharaPlayerSelectController>(GetOwningPlayer());
+
+	if (!CharaSelectPC)
+	{
+		return;
+	}
+
+	CharaSelectPC->PushModal(WardrobeSelectWidgetClass);
+
+	OnCharaConfirm();
 }
 
 void UNightSkyCharaSelectGrid::OnCharaConfirm()

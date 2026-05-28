@@ -9,6 +9,7 @@
 #include "NightSkyEngine/UI/ExtendedCommonActivatableWidget.h"
 #include "NightSkyCharaSelectGrid.generated.h"
 
+class UNightSkyWardrobeSelect;
 /**
  * 
  */
@@ -75,6 +76,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
 	TSubclassOf<UCommonActivatableWidget> StageSelectWidgetClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
+	TSubclassOf<UCommonActivatableWidget> WardrobeSelectWidgetClass;
 	
 	UFUNCTION(BlueprintCallable)
 	void OnCharaHovered(FText Name);

@@ -37,13 +37,13 @@ protected:
 	
 public:
 	UFUNCTION(BlueprintCallable, Category="Default")
-	UCommonActivatableWidget* PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
+	void PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
 	
 	UFUNCTION(BlueprintCallable, Category="Default")
-	UCommonActivatableWidget* PushMenu(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
+	void PushMenu(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
 	
 	UFUNCTION(BlueprintCallable, Category="Default")
-	UNightSkyGenericPromptWidget* PushPrompt(FText InPromptText, UExtendedCommonActivatableWidget* InPromptOwner, int32 InPromptIndex);
+	void PushPrompt(FText InPromptText, UExtendedCommonActivatableWidget* InPromptOwner, int32 InPromptIndex);
 	
 	UFUNCTION()
 	void OnClearPrompt();

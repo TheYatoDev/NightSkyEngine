@@ -14,6 +14,7 @@
 #include "NightSkyEngine/Data/StateData.h"
 #include "PlayerObject.generated.h"
 
+class UWardrobeData;
 class ULinkActorData;
 class USubroutine;
 class UCameraShakeData;
@@ -670,6 +671,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Assets)
 	UMaterialData* MaterialData;
+	//WardrobeStart
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category=Assets)
+	UWardrobeData* WardrobeData;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Assets)
+	int32 SkinIndex = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Assets)
+	int32 MaxSkinIndex = 2;
+	//WardrobeEnd
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Assets)
 	int32 ColorIndex = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Assets)

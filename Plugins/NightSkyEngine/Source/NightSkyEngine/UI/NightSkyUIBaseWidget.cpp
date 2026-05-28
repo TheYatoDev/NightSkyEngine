@@ -4,34 +4,32 @@
 #include "NightSkyUIBaseWidget.h"
 #include "Common/NightSkyGenericPromptWidget.h"
 
-UCommonActivatableWidget* UNightSkyUIBaseWidget::PushMenu(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
+void UNightSkyUIBaseWidget::PushMenu(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
 {
 	if (!MenuStack || !ActivatableWidgetClass)
 	{
-		return nullptr;
+		return;
 	}
 
-	return MenuStack->AddWidget<UCommonActivatableWidget>(ActivatableWidgetClass);
+	MenuStack->AddWidget<UCommonActivatableWidget>(ActivatableWidgetClass);
 }
 
-UNightSkyGenericPromptWidget* UNightSkyUIBaseWidget::PushPrompt(FText InPromptText, UExtendedCommonActivatableWidget* InPromptOwner, int32 InPromptIndex)
+void UNightSkyUIBaseWidget::PushPrompt(FText InPromptText, UExtendedCommonActivatableWidget* InPromptOwner, int32 InPromptIndex)
 {
 	if (!PromptStack || !GenericPromptClass)
 	{
-		return nullptr;
+		return;
 	}
 
 	UNightSkyGenericPromptWidget* PromptWidget = PromptStack->AddWidget<UNightSkyGenericPromptWidget>(GenericPromptClass);
 
 	if (!PromptWidget)
 	{
-		return nullptr;
+		return;
 	}
 
 	PromptWidget->SetPromptInfo(InPromptText, InPromptOwner, InPromptIndex);
 	PromptWidget->OnDeactivated().AddUObject(this, &UNightSkyUIBaseWidget::OnClearPrompt);
-
-	return PromptWidget;
 }
 
 void UNightSkyUIBaseWidget::OnClearPrompt()
@@ -54,12 +52,12 @@ void UNightSkyUIBaseWidget::OnClearPrompt()
 	}
 }
 
-UCommonActivatableWidget* UNightSkyUIBaseWidget::PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
+void UNightSkyUIBaseWidget::PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
 {
 	if (!PromptStack || !ActivatableWidgetClass)
 	{
-		return nullptr;
+		return;
 	}
 
-	return PromptStack->AddWidget<UCommonActivatableWidget>(ActivatableWidgetClass);
+	PromptStack->AddWidget<UCommonActivatableWidget>(ActivatableWidgetClass);
 }
