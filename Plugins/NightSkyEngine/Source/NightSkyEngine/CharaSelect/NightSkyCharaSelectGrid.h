@@ -9,6 +9,7 @@
 #include "NightSkyEngine/UI/ExtendedCommonActivatableWidget.h"
 #include "NightSkyCharaSelectGrid.generated.h"
 
+class UNightSkyStageSelectButton;
 class UNightSkyWardrobeSelect;
 /**
  * 
@@ -22,6 +23,8 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	virtual void NativeOnActivated() override;
+	
+	virtual bool NativeOnHandleBackAction() override;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> CanvasPanel;
@@ -48,18 +51,11 @@ protected:
 	TArray<TObjectPtr<UNightSkyCSelectButton>> Buttons;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CharNumP1 = 1;
+	int32 CharaNumP1 = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 CharNumP2 = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsP1 = true;
+	int32 CharaNumP2 = 1;
 	
-	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<ANightSkyCharaSelectGameState> GameState;
-
-protected:
 	void PopulateButtons();
 
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
@@ -68,6 +64,12 @@ protected:
 	void SetCharNum();
 	
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<ANightSkyCharaSelectGameState> GameState;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsP1 = true;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
 	TSoftObjectPtr<UWorld> MainMenuLevel;
 	
@@ -90,5 +92,8 @@ public:
 	void OnCharaConfirm();
 	
 	virtual void OnPromptConfirm_Implementation(int32 PromptIndex) override;
+	
+	UFUNCTION(BlueprintCallable)
+	void Back();
 	
 };

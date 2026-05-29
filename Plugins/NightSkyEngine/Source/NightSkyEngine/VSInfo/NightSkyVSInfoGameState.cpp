@@ -27,6 +27,22 @@ void ANightSkyVSInfoGameState::BeginPlay()
 	Super::BeginPlay();
 
 	GameInstance = Cast<UNightSkyGameInstance>(GetGameInstance());
+	
+	if (!GameInstance)
+	{
+		UE_LOG(LogTemp, Error, TEXT("VSInfoGameState - GameInstance is null!"));
+		return;
+	}
+
+	if (!GameInstance->BattleData.Stage)
+	{
+		UE_LOG(LogTemp, Error, TEXT("VSInfoGameState - Stage is null!"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("VSInfoGameState BeginPlay - Stage=%s"),
+		*GameInstance->BattleData.Stage->GetName());
+	
 	LoadPackageAsync(GameInstance->BattleData.Stage->StageURL,
 		FLoadPackageAsyncDelegate::CreateUObject(this,
 			&ANightSkyVSInfoGameState::OnMapPackageLoaded),

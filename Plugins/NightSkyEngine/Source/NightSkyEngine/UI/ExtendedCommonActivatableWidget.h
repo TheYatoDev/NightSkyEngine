@@ -57,9 +57,6 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = ExtendedActivatableWidget)
 	void UnregisterAllBindings();
 	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void OnPromptConfirm(int32 PromptIndex);
-	
 	/** The desired input mode to use while this UI is activated, for example do you want key presses to still reach the game/player controller? */
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	ENightSkyWidgetInputMode DefaultInputConfig = ENightSkyWidgetInputMode::Default;
@@ -67,6 +64,10 @@ protected:
 	/** The desired mouse behavior when the game gets input. */
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	EMouseCaptureMode GameMouseCaptureMode = EMouseCaptureMode::CapturePermanently;
+	
+public:
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnPromptConfirm(int32 PromptIndex);
 
 private:
 	TArray<FUIActionBindingHandle> BindingHandles;

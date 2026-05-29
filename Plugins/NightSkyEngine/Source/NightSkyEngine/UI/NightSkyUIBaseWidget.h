@@ -35,6 +35,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Default")
 	TSubclassOf<UNightSkyGenericPromptWidget> GenericPromptClass;
 	
+	virtual void NativeConstruct() override;
+	
 public:
 	UFUNCTION(BlueprintCallable, Category="Default")
 	void PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);

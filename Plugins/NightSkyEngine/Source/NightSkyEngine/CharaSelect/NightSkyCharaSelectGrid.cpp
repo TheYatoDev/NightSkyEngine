@@ -3,15 +3,13 @@
 
 #include "NightSkyCharaSelectGrid.h"
 #include "Components/CanvasPanel.h"
-//#include "Components/Overlay.h"
 #include "Components/WrapBox.h"
-//#include "CommonBorder.h"
 #include "CommonButtonBase.h"
 #include "CommonTextBlock.h"
 #include "NightSkyCSelectButton.h"
-//#include "VectorTypes.h"
 #include "NightSkyCharaPlayerSelectController.h"
 #include "Kismet/GameplayStatics.h"
+#include "NightSkyEngine/Battle/Objects/PlayerObject.h"
 #include "NightSkyEngine/Data/PrimaryCharaData.h"
 #include "NightSkyEngine/Miscellaneous/NightSkyGameInstance.h"
 
@@ -19,6 +17,7 @@
 void UNightSkyCharaSelectGrid::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
 	SetCharNum();
 	GameState = Cast<ANightSkyCharaSelectGameState>(GetWorld()->GetGameState());
 	GameState->GatherCharaData();
@@ -76,7 +75,7 @@ void UNightSkyCharaSelectGrid::PopulateButtons()
 		CharBox->AddChild(CSelectButton);
 		Buttons.Add(CSelectButton);
 
-		UE_LOG(LogTemp, Warning, TEXT("Spawned Button Class: %s"), *GetNameSafe(CSelectButton->GetClass()));
+		//UE_LOG(LogTemp, Warning, TEXT("Spawned Button Class: %s"), *GetNameSafe(CSelectButton->GetClass()));
 	}
 }
 
@@ -109,8 +108,8 @@ void UNightSkyCharaSelectGrid::SetCharNum()
 		return;
 	}
 
-	CharNumP1 = NightSkyGI->TeamSizeP1;
-	CharNumP2 = NightSkyGI->TeamSizeP2;
+	CharaNumP1 = NightSkyGI->TeamSizeP1;
+	CharaNumP2 = NightSkyGI->TeamSizeP2;
 }
 
 void UNightSkyCharaSelectGrid::OnCharaHovered(FText Name)
@@ -133,6 +132,8 @@ void UNightSkyCharaSelectGrid::OnCharaHovered(FText Name)
 
 void UNightSkyCharaSelectGrid::OnCharaSelected(UPrimaryCharaData* Player)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnCharaSelected ENTRY - Player=%s, bIsP1=%d"),
+		Player ? *Player->GetName() : TEXT("null"), bIsP1);
 	if (!Player)
 	{
 		return;
@@ -149,31 +150,26 @@ void UNightSkyCharaSelectGrid::OnCharaSelected(UPrimaryCharaData* Player)
 
 	if (bIsP1)
 	{
+		FSoftObjectPath PlayerPath(Player);
+
 		const int32 ExistingIndex =
 			NightSkyGI->BattleData.PlayerListP1.IndexOfByPredicate(
-				[Player](const TSoftObjectPtr<UPrimaryCharaData>& Entry)
+				[&PlayerPath](const TSoftObjectPtr<UPrimaryCharaData>& Entry)
 				{
-					return Entry.Get() == Player;
+					return Entry.ToSoftObjectPath() == PlayerPath;
 				}
 			);
 
-		if (CharNumP1 > ExistingIndex || ExistingIndex == INDEX_NONE)
+		if (CharaNumP1 > ExistingIndex || ExistingIndex == INDEX_NONE)
 		{
-			Index = CharNumP1;
+			Index = CharaNumP1;
 		}
 	}
 	else
 	{
-		for (int32 ArrayIndex = 0; ArrayIndex < NightSkyGI->BattleData.PlayerListP1.Num(); ++ArrayIndex)
+		if (NightSkyGI->BattleData.PlayerListP1.IsValidIndex(CharaNumP2 - 1))
 		{
-			const TSoftObjectPtr<UPrimaryCharaData>& Entry =
-				NightSkyGI->BattleData.PlayerListP1[ArrayIndex];
-
-			if (Entry.Get() == Player && ArrayIndex < CharNumP2)
-			{
-				Index = CharNumP2;
-				break;
-			}
+			Index = CharaNumP2;
 		}
 	}
 
@@ -181,8 +177,6 @@ void UNightSkyCharaSelectGrid::OnCharaSelected(UPrimaryCharaData* Player)
 	{
 		return;
 	}
-	
-	// Store the selected player into BattleData before this point if needed.
 
 	ANightSkyCharaSelectGameState* CharaSelectGS =
 		GetWorld() ? GetWorld()->GetGameState<ANightSkyCharaSelectGameState>() : nullptr;
@@ -204,28 +198,27 @@ void UNightSkyCharaSelectGrid::OnCharaSelected(UPrimaryCharaData* Player)
 
 	CharaSelectPC->PushModal(WardrobeSelectWidgetClass);
 
-	OnCharaConfirm();
+	/*if (bIsP1)
+	{
+		OnCharaConfirm();
+	}*/
 }
 
 void UNightSkyCharaSelectGrid::OnCharaConfirm()
 {
-	const bool bP1Complete =
-		GameState && GameState->P1Charas.Num() >= CharNumP1;
+	const bool bP1Complete = GameState && GameState->P1Charas.Num() >= CharaNumP1;
 
-	if (bP1Complete && !bIsP1)
+	if (bP1Complete || !bIsP1)
 	{
 		bIsP1 = false;
 
 		UNightSkyGameInstance* NightSkyGI =
 			Cast<UNightSkyGameInstance>(GetGameInstance());
 
-		if (!NightSkyGI)
-		{
-			return;
-		}
+		if (!NightSkyGI) return;
 
 		const bool bP2Complete =
-			GameState && GameState->P2Charas.Num() >= CharNumP2;
+			GameState && GameState->P2Charas.Num() >= CharaNumP2;
 
 		const bool bIsMultiplayer =
 			NightSkyGI->FighterRunner == Multiplayer;
@@ -249,10 +242,7 @@ void UNightSkyCharaSelectGrid::OnCharaConfirm()
 			UNightSkyGameInstance* NightSkyGI =
 				Cast<UNightSkyGameInstance>(GetGameInstance());
 
-			if (!NightSkyGI)
-			{
-				return;
-			}
+			if (!NightSkyGI) return;
 
 			switch (NightSkyGI->FighterRunner)
 			{
@@ -266,16 +256,12 @@ void UNightSkyCharaSelectGrid::OnCharaConfirm()
 					{
 						MenuPC->PushMenu(LocalPlayListWidgetClass);
 					}
-
 					break;
 				}
-
 			case Multiplayer:
 				break;
-
 			case SyncTest:
 				break;
-
 			default:
 				break;
 			}
@@ -297,5 +283,103 @@ void UNightSkyCharaSelectGrid::OnPromptConfirm_Implementation(int32 PromptIndex)
 	default:
 		break;
 	}
+}
+
+bool UNightSkyCharaSelectGrid::NativeOnHandleBackAction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grid NativeOnHandleBackAction"));
+	Back();
+	return true;
+}
+
+void UNightSkyCharaSelectGrid::Back()
+{
+	if (!GameState) return;
+
+    const bool bBranch = (GameState->P1Charas.Num() == 0) || bIsP1;
+
+    if (bBranch)
+    {
+        bIsP1 = true;
+
+        if (GameState->P1Charas.Num() > 0)
+        {
+            AActor* LastP1Chara = GameState->P1Charas.Last();
+            if (LastP1Chara) LastP1Chara->Destroy();
+            GameState->P1Charas.RemoveAt(GameState->P1Charas.Num() - 1);
+
+            UNightSkyGameInstance* GI = Cast<UNightSkyGameInstance>(GetGameInstance());
+            if (!GI) return;
+
+            FBattleData& BattleData = GI->BattleData;
+            int32 TempIndex = BattleData.PlayerListP1.Num() - 1;
+            while (TempIndex > 0 && !BattleData.PlayerListP1[TempIndex].IsValid())
+            {
+                BattleData.PlayerListP1[TempIndex] = nullptr;
+                BattleData.ColorIndicesP1[TempIndex] = 0;
+                TempIndex--;
+            }
+        }
+        else
+        {
+            APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+            if (ANightSkyCharaPlayerSelectController* CharaSelectPC =
+                Cast<ANightSkyCharaPlayerSelectController>(PC))
+            {
+                CharaSelectPC->PushPrompt(
+                    FText::FromString("Are you sure you wish to return to the main menu?"),
+                    this, 0);
+            }
+        }
+    }
+    else
+    {
+        if (GameState->P2Charas.Num() == 0)
+        {
+            bIsP1 = true;
+        	
+        	if (SelectedP2)
+        	{
+        		SelectedP2->SetText(FText::GetEmpty());
+        	}
+
+            if (GameState->P1Charas.Num() > 0)
+            {
+                AActor* LastP1Chara = GameState->P1Charas.Last();
+                if (LastP1Chara) LastP1Chara->Destroy();
+                GameState->P1Charas.RemoveAt(GameState->P1Charas.Num() - 1);
+
+                UNightSkyGameInstance* GI = Cast<UNightSkyGameInstance>(GetGameInstance());
+                if (!GI) return;
+
+                FBattleData& BattleData = GI->BattleData;
+                int32 TempIndex = BattleData.PlayerListP1.Num() - 1;
+                while (TempIndex > 0 && !BattleData.PlayerListP1[TempIndex].IsValid())
+                {
+                    BattleData.PlayerListP1[TempIndex] = nullptr;
+                    BattleData.ColorIndicesP1[TempIndex] = 0;
+                    TempIndex--;
+                }
+            }
+        }
+        else
+        {
+            AActor* LastP2Chara = GameState->P2Charas.Last();
+            if (LastP2Chara) LastP2Chara->Destroy();
+            GameState->P2Charas.RemoveAt(GameState->P2Charas.Num() - 1);
+
+            UNightSkyGameInstance* GI = Cast<UNightSkyGameInstance>(GetGameInstance());
+            if (!GI) return;
+
+            FBattleData& BattleData = GI->BattleData;
+            int32 TempIndex = BattleData.PlayerListP2.Num() - 1;
+            while (TempIndex > 0 && !BattleData.PlayerListP2[TempIndex].IsValid())
+            {
+                BattleData.PlayerListP2[TempIndex] = nullptr;
+                BattleData.ColorIndicesP2[TempIndex] = 0;
+                TempIndex--;
+            }
+        }
+    }
 }
 

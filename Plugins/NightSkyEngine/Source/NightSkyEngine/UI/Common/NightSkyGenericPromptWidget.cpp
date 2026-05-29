@@ -3,6 +3,8 @@
 
 #include "NightSkyGenericPromptWidget.h"
 #include "CommonTextBlock.h"
+#include "NightSkyGenericButton.h"
+#include "NightSkyEngine/UI/ExtendedCommonActivatableWidget.h"
 
 void UNightSkyGenericPromptWidget::NativeOnActivated()
 {
@@ -14,6 +16,46 @@ void UNightSkyGenericPromptWidget::NativeOnActivated()
 	}
 }
 
+void UNightSkyGenericPromptWidget::NativeConstruct()
+{
+	if (YesButton)
+	{
+		YesButton->OnClicked().AddUObject(
+			this,
+			&UNightSkyGenericPromptWidget::HandleYesButtonClicked
+		);
+	}
+	
+	if (NoButton)
+	{
+		NoButton->OnClicked().AddUObject(
+			this,
+			&UNightSkyGenericPromptWidget::HandleNoButtonClicked
+		);
+	}
+}
+
+UWidget* UNightSkyGenericPromptWidget::NativeGetDesiredFocusTarget() const
+{
+	return YesButton;
+}
+
+bool UNightSkyGenericPromptWidget::NativeOnHandleBackAction()
+{
+	DeactivateWidget();
+	return true;
+}
+
+FReply UNightSkyGenericPromptWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+{
+	if (UWidget* FocusTarget = NativeGetDesiredFocusTarget())
+	{
+		FocusTarget->SetFocus();
+	}
+
+	return FReply::Handled();
+}
+
 void UNightSkyGenericPromptWidget::SetPromptInfo(FText InPromptText, UExtendedCommonActivatableWidget* InPromptOwner, int32 InPromptIndex)
 {
 	if (PromptText)
@@ -23,4 +65,17 @@ void UNightSkyGenericPromptWidget::SetPromptInfo(FText InPromptText, UExtendedCo
 
 	Owner = InPromptOwner;
 	Index = InPromptIndex;
+}
+
+void UNightSkyGenericPromptWidget::HandleYesButtonClicked()
+{
+	if (Owner)
+	{
+		Owner->OnPromptConfirm(Index);
+	}
+}
+
+void UNightSkyGenericPromptWidget::HandleNoButtonClicked()
+{
+	DeactivateWidget();
 }

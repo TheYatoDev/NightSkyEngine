@@ -22,6 +22,8 @@ public class NightSkyEngine : ModuleRules
 			"UMG",
 			"Niagara",
 			"Paper2D",
+			"Slate",
+			"SlateCore",
 		});
 		
 		PrivateDependencyModuleNames.AddRange(new[]

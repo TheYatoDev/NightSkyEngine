@@ -6,6 +6,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "NightSkyCharaSelectGameState.generated.h"
 
+class UPrimaryStageData;
 class UPrimaryCharaData;
 class UNightSkyGameInstance;
 class APlayerObject;
@@ -32,6 +33,8 @@ public:
 	TArray<FVector> P2Positions;
 	UPROPERTY(BlueprintReadOnly, Category="Character Select")
 	TArray<TObjectPtr<UPrimaryCharaData>> CharaDatas;
+	UPROPERTY(BlueprintReadOnly, Category="Character Select")
+	TArray<TObjectPtr<UPrimaryStageData>> StageDatas;
 
 protected:
 	// Called when the game starts or when spawned
@@ -47,4 +50,6 @@ public:
 	void AddColorIndex(int InColor, bool IsP1 = true);
 	UFUNCTION(BlueprintCallable)
 	void GatherCharaData();
+	UFUNCTION(BlueprintCallable)
+	void GatherStageData();
 };

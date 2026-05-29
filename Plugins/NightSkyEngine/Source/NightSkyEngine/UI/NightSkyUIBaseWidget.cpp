@@ -52,6 +52,13 @@ void UNightSkyUIBaseWidget::OnClearPrompt()
 	}
 }
 
+void UNightSkyUIBaseWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	bDisplayInActionBar = true;
+}
+
 void UNightSkyUIBaseWidget::PushModal(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
 {
 	if (!PromptStack || !ActivatableWidgetClass)

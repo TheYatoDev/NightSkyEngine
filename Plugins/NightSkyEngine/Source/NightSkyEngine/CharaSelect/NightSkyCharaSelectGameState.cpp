@@ -6,6 +6,7 @@
 #include "Engine/AssetManager.h"
 #include "NightSkyEngine/Battle/NightSkyGameState.h"
 #include "NightSkyEngine/Data/PrimaryCharaData.h"
+#include "NightSkyEngine/Data/PrimaryStageData.h"
 #include "NightSkyEngine/Miscellaneous/NightSkyGameInstance.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(NightSkyCharaSelectGameState)
@@ -135,5 +136,31 @@ void ANightSkyCharaSelectGameState::GatherCharaData()
 		//
 
 		CharaDatas.Add(CharaData);
+	}
+}
+
+void ANightSkyCharaSelectGameState::GatherStageData()
+{
+	StageDatas.Empty();
+
+	UAssetManager& AssetManager = UAssetManager::Get();
+    
+	TArray<FPrimaryAssetId> AssetIds;
+	AssetManager.GetPrimaryAssetIdList(
+		FPrimaryAssetType("PrimaryStageData"),
+		AssetIds
+	);
+
+	for (const FPrimaryAssetId& AssetId : AssetIds)
+	{
+		FSoftObjectPath AssetPath = AssetManager.GetPrimaryAssetPath(AssetId);
+        
+		UObject* LoadedAsset = AssetPath.TryLoad();
+        
+		UPrimaryStageData* StageData = Cast<UPrimaryStageData>(LoadedAsset);
+		if (StageData)
+		{
+			StageDatas.Add(StageData);
+		}
 	}
 }
